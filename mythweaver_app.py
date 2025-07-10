@@ -9,14 +9,20 @@ import streamlit as st
 import random
 import os
 import io
+import zipfile
+from PIL import Image
 
-def get_image_path(char_class, race, extensions=["jpeg", "jpg", "png"]):
-    base_path = f"assets/character_images/{char_class.lower().replace(' ', '_')}_{race.lower().replace(' ', '_')}"
-    for ext in extensions:
-        full_path = f"{base_path}.{ext}"
-        if os.path.exists(full_path):
-            return full_path
-    return "assets/character_images/default.jpeg"
+char_zip = zipfile.ZipFile("assets/character_images.zip", "r")
+equip_zip = zipfile.ZipFile("assets/equipment.zip", "r")
+
+def get_character_image_from_zip(char_class, race):
+    file_base = f"{char_class.lower().replace(' ', '_')}_{race.lower().replace(' ', '_')}"
+    for ext in ["webp", "png", "jpg", "jpeg"]:
+        file_name = f"{file_base}.{ext}"
+        if file_name in char_zip.namelist():
+            img_data = char_zip.read(file_name)
+            return Image.open(io.BytesIO(img_data))
+    return Image.open("assets/character_images/default.webp")
 
 
 # ---------------------------- CONFIGURATION ----------------------------
@@ -75,20 +81,23 @@ def generate_lore(name, char_class, race):
     ]
     return random.choice(templates)
 
-def get_character_image_path(char_class, race, extensions=["jpeg", "jpg", "png"]):
-    base_path = f"assets/character_images/{char_class.lower().replace(' ', '_')}_{race.lower().replace(' ', '_')}"
-    for ext in extensions:
-        full_path = f"{base_path}.{ext}"
-        if os.path.exists(full_path):
-            return full_path
-    return "assets/character_images/default.jpeg"
+def get_character_image_from_zip(char_class, race):
+    file_base = f"{char_class.lower().replace(' ', '_')}_{race.lower().replace(' ', '_')}"
+    for ext in ["webp", "png", "jpg", "jpeg"]:
+        file_name = f"{file_base}.{ext}"
+        if file_name in char_zip.namelist():
+            img_data = char_zip.read(file_name)
+            return Image.open(io.BytesIO(img_data))
+    return Image.open("assets/character_images/default.webp")
 
-def get_equipment_image_path(item_name_base, extensions=["jpeg", "jpg", "png"]):
-    for ext in extensions:
-        full_path = f"assets/equipment/{item_name_base}.{ext}"
-        if os.path.exists(full_path):
-            return full_path
-    return "assets/equipment/default.jpeg"
+def get_equipment_image_from_zip(item_name):
+    base_name = item_name.rsplit(".", 1)[0]
+    for ext in ["webp", "png", "jpg", "jpeg"]:
+        file_name = f"{base_name}.{ext}"
+        if file_name in equip_zip.namelist():
+            img_data = equip_zip.read(file_name)
+            return Image.open(io.BytesIO(img_data))
+    return Image.open("assets/equipment/default.webp")
 
 def quiz_to_class(traits, tags):
     
@@ -102,8 +111,8 @@ def quiz_to_class(traits, tags):
             score -= diff * 0.8
 
         # Tag influences
-        if cls == "Druid" and "nature" in tags: score += 60
-        if cls == "Cleric" and "holy" in tags: score += 45.5
+        if cls == "Druid" and "nature" in tags: score += 90
+        if cls == "Cleric" and "holy" in tags: score += 45
         if cls == "Shadow Knight" and "dark" in tags: score += 85
         if cls == "Healer" and "support" in tags: score += 30
         if cls == "Bard" and "loyal" in tags: score += 30
@@ -114,7 +123,7 @@ def quiz_to_class(traits, tags):
         if cls == "Ranger" and "nature" in tags: score += 50
         if cls == "Mage" and "arcane" in tags: score += 10
         if cls == "Tank" and "loyal" in tags: score += 10
-        if cls == "Healer" and "holy" in tags: score += 31.5
+        if cls == "Healer" and "holy" in tags: score += 30
 
         if score > best_score:
             best_score = score
@@ -193,8 +202,8 @@ if st.button("⚔️ Forge My Character"):
             readable_name = item_file.replace("_", " ").replace(".png", "").title()
             st.markdown(f"- **{readable_name}**")
             try:
-                path = get_equipment_image_path(item_file)
-                st.image(path, use_container_width=True)
+                path = get_equipment_image_from_zip(item_file)
+                st.image(get_equipment_image_from_zip(item_file), use_container_width=True)
             except:
                 st.warning(f"[Missing image: {item_file}]")
 
@@ -204,8 +213,8 @@ if st.button("⚔️ Forge My Character"):
     st.info(lore)
 
     try:
-        char_img_path = get_character_image_path(char_class, selected_race)
-        st.image(char_img_path, use_container_width=True)
+        char_img_path = get_character_image_from_zip(char_class, selected_race)
+        st.image(get_character_image_from_zip(char_class, selected_race), use_container_width=True)
     except:
         st.warning("[No character art available]")
 

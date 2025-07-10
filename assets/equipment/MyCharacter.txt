@@ -1,0 +1,8 @@
+
+    Name: Dramor
+    Race: Elf
+    Class: Mage
+    Stats: {'STR': 50, 'DEF': 20, 'INT': 110, 'AGI': 80}
+    Equipment: arcane_robe, mana_staff, arcane_ring
+    Lore: Dramor, a Elf born under a blood moon, destined to rise as a Mage.
+    

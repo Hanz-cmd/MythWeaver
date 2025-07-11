@@ -45,7 +45,7 @@ races = ["Elf", "Human", "Goblin", "Dwarf", "Fae", "Orc", "Dragonborn", "Tieflin
 # Equipment images must match filenames in assets/equipments
 
 equipment_by_class = {
-    "Knight": ["steel_armor", "tower_shield", "longsword"],
+    "Knight": ["steel_armor", "tower_sheild", "longsword"],
     "Tank": ["reinforced_plate", "massive_shield", "warhammer"],
     "Mage": ["arcane_robe", "mana_staff", "arcane_ring"],
     "Ranger": ["leather_armor", "composite_bow", "tracking_goggles"],

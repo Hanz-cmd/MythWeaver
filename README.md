@@ -14,7 +14,7 @@ MythWeaver is an interactive fantasy character generator built with Python and S
 
 ## 🚀 Demo
 
-👉 [Streamlit App Live](https://your-streamlit-link-here)
+👉 [Streamlit App Live](https://mythweaver.streamlit.app/)
 
 ## 🛠️ Built With
 
